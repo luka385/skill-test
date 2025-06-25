@@ -10,6 +10,8 @@ type StudentRepository interface {
 	GetByID(string) (*domain.Student, error)
 }
 
-type PDFGenerator interface {
+type FileGenerator interface {
 	Generate(*domain.Student) (*bytes.Buffer, error)
+	GetContentType() string
+	GetFileExtension() string
 }

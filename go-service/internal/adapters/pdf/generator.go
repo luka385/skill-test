@@ -6,11 +6,12 @@ import (
 	"github.com/jung-kurt/gofpdf"
 
 	"github.com/luke385/skill-test/internal/domain"
+	"github.com/luke385/skill-test/internal/ports"
 )
 
 type PDFAdapter struct{}
 
-func NewPDFAdapter() *PDFAdapter {
+func NewPDFAdapter() ports.FileGenerator {
 	return &PDFAdapter{}
 }
 
@@ -19,7 +20,7 @@ func (p *PDFAdapter) Generate(s *domain.Student) (*bytes.Buffer, error) {
 	pdf.AddPage()
 	pdf.SetFont("Arial", "B", 16)
 	pdf.CellFormat(0, 10, "Student Report", "", 1, "C", false, 0, "")
-	pdf.Ln(4)
+	pdf.Ln(6)
 
 	pdf.SetFont("Arial", "", 12)
 	pdf.Cell(40, 8, "Name:")
@@ -34,9 +35,17 @@ func (p *PDFAdapter) Generate(s *domain.Student) (*bytes.Buffer, error) {
 	pdf.Cell(0, 8, s.Class)
 	pdf.Ln(8)
 
-	var buf bytes.Buffer
-	if err := pdf.Output(&buf); err != nil {
+	buf := new(bytes.Buffer)
+	if err := pdf.Output(buf); err != nil {
 		return nil, err
 	}
-	return &buf, nil
+	return buf, nil
+}
+
+func (p *PDFAdapter) GetContentType() string {
+	return "application/pdf"
+}
+
+func (p *PDFAdapter) GetFileExtension() string {
+	return "pdf"
 }

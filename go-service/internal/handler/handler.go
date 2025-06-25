@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"log"
-	"net/http"
+	"bytes"
 
 	"github.com/gin-gonic/gin"
 
@@ -10,29 +9,41 @@ import (
 )
 
 type StudentHandler struct {
-	usecase *usecase.ReportUsecase
+	pdfUC  *usecase.ReportUsecase
+	xlsxUC *usecase.ReportUsecase
 }
 
-func NewStudentHandler(uc *usecase.ReportUsecase) *StudentHandler {
-	return &StudentHandler{uc}
+func NewStudentHandler(pdfUC, xlsxUC *usecase.ReportUsecase) *StudentHandler {
+	return &StudentHandler{pdfUC: pdfUC, xlsxUC: xlsxUC}
 }
 
 func (h *StudentHandler) GenerateReport(c *gin.Context) {
 	id := c.Param("id")
-	log.Printf("GenerateReport called with id=%s", id)
 	if id == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Student ID is required"})
+		c.JSON(400, gin.H{"error": "Student ID required"})
 		return
 	}
 
-	pdfBuf, err := h.usecase.Execute(id)
+	format := c.DefaultQuery("format", "pdf")
+
+	var (
+		buf         *bytes.Buffer
+		contentType string
+		ext         string
+		err         error
+	)
+	switch format {
+	case "xlsx":
+		buf, contentType, ext, err = h.xlsxUC.Execute(id)
+	default: // "pdf"
+		buf, contentType, ext, err = h.pdfUC.Execute(id)
+	}
 	if err != nil {
-		log.Printf("ERROR (GenerateReport): %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.Header("Content-Type", "application/pdf")
-	c.Header("Content-Disposition", "attachment; filename=student_"+id+".pdf")
-	c.Data(http.StatusOK, "application/pdf", pdfBuf.Bytes())
+	c.Header("Content-Type", contentType)
+	c.Header("Content-Disposition", "attachment; filename=student_report."+ext)
+	c.Data(200, contentType, buf.Bytes())
 }

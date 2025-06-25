@@ -9,18 +9,28 @@ import (
 
 type ReportUsecase struct {
 	Repo ports.StudentRepository
-	PDF  ports.PDFGenerator
+	Gen  ports.FileGenerator
 }
 
-func NewReportUseCase(repo ports.StudentRepository, pdf ports.PDFGenerator) *ReportUsecase {
-	return &ReportUsecase{Repo: repo, PDF: pdf}
+func NewReportUseCase(repo ports.StudentRepository, gen ports.FileGenerator) *ReportUsecase {
+	return &ReportUsecase{Repo: repo, Gen: gen}
 }
 
-func (uc *ReportUsecase) Execute(id string) (*bytes.Buffer, error) {
+func (uc *ReportUsecase) Execute(id string) (*bytes.Buffer, string, string, error) {
 	student, err := uc.Repo.GetByID(id)
 	if err != nil {
 		log.Printf("ERROR (GetByID): %v", err)
-		return nil, err
+		return nil, "", "", err
 	}
-	return uc.PDF.Generate(student)
+
+	buf, err := uc.Gen.Generate(student)
+	if err != nil {
+		log.Printf("ERROR (Generate): %v", err)
+		return nil, "", "", err
+	}
+
+	contentType := uc.Gen.GetContentType()
+	ext := uc.Gen.GetFileExtension()
+
+	return buf, contentType, ext, nil
 }
