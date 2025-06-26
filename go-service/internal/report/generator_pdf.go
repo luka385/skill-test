@@ -1,17 +1,16 @@
-package pdf
+package report
 
 import (
 	"bytes"
 
 	"github.com/jung-kurt/gofpdf"
 
-	"github.com/luke385/skill-test/internal/report"
 	"github.com/luke385/skill-test/internal/report/usecase/domain"
 )
 
 type PDFAdapter struct{}
 
-func NewPDFAdapter() report.FileGenerator {
+func NewPDFAdapter() FileGenerator {
 	return &PDFAdapter{}
 }
 

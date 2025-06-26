@@ -8,9 +8,6 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/luke385/skill-test/internal/report"
-	"github.com/luke385/skill-test/internal/report/adapters/client"
-	"github.com/luke385/skill-test/internal/report/adapters/pdf"
-	"github.com/luke385/skill-test/internal/report/adapters/xls"
 )
 
 func main() {
@@ -27,14 +24,14 @@ func main() {
 	)
 
 	// Initialize repository client
-	repo, err := client.NewNodeAPIClient()
+	repo, err := report.NewNodeAPIClient()
 	if err != nil {
 		log.Fatalf("Error initializing NodeAPIClient: %v", err)
 	}
 
 	// Create UseCases for PDF and Excel
-	pdfUC := report.NewReportUseCase(repo, pdf.NewPDFAdapter())
-	excelUC := report.NewReportUseCase(repo, xls.NewXLSGenerator())
+	pdfUC := report.NewReportUseCase(repo, report.NewPDFAdapter())
+	excelUC := report.NewReportUseCase(repo, report.NewXLSGenerator())
 
 	// Initialize handler with both usecases
 	h := report.NewStudentHandler(pdfUC, excelUC)

@@ -1,17 +1,16 @@
-package xls
+package report
 
 import (
 	"bytes"
 
 	"github.com/xuri/excelize/v2"
 
-	"github.com/luke385/skill-test/internal/report"
 	"github.com/luke385/skill-test/internal/report/usecase/domain"
 )
 
 type ExcelAdapter struct{}
 
-func NewXLSGenerator() report.FileGenerator {
+func NewXLSGenerator() FileGenerator {
 	return &ExcelAdapter{}
 }
 
