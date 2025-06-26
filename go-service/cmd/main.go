@@ -7,11 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"github.com/luke385/skill-test/internal/adapters/client"
-	"github.com/luke385/skill-test/internal/adapters/pdf"
-	"github.com/luke385/skill-test/internal/adapters/xls"
-	"github.com/luke385/skill-test/internal/handler"
-	"github.com/luke385/skill-test/internal/usecase"
+	"github.com/luke385/skill-test/internal/report"
+	"github.com/luke385/skill-test/internal/report/adapters/client"
+	"github.com/luke385/skill-test/internal/report/adapters/pdf"
+	"github.com/luke385/skill-test/internal/report/adapters/xls"
 )
 
 func main() {
@@ -34,17 +33,17 @@ func main() {
 	}
 
 	// Create UseCases for PDF and Excel
-	pdfUC := usecase.NewReportUseCase(repo, pdf.NewPDFAdapter())
-	excelUC := usecase.NewReportUseCase(repo, xls.NewXLSGenerator())
+	pdfUC := report.NewReportUseCase(repo, pdf.NewPDFAdapter())
+	excelUC := report.NewReportUseCase(repo, xls.NewXLSGenerator())
 
 	// Initialize handler with both usecases
-	h := handler.NewStudentHandler(pdfUC, excelUC)
+	h := report.NewStudentHandler(pdfUC, excelUC)
 
 	// Set up Gin
 	r := gin.Default()
 
 	// Register routes
-	handler.RegisterRoutes(r, h)
+	report.RegisterRoutes(r, h)
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"message": "Not found"})
 	})

@@ -1,18 +1,22 @@
-package usecase
+package report
 
 import (
 	"bytes"
 	"log"
 
-	"github.com/luke385/skill-test/internal/ports"
+	"github.com/luke385/skill-test/internal/report/usecase/domain"
 )
 
-type ReportUsecase struct {
-	Repo ports.StudentRepository
-	Gen  ports.FileGenerator
+type StudentRepository interface {
+	GetByID(string) (*domain.Student, error)
 }
 
-func NewReportUseCase(repo ports.StudentRepository, gen ports.FileGenerator) *ReportUsecase {
+type ReportUsecase struct {
+	Repo StudentRepository
+	Gen  FileGenerator
+}
+
+func NewReportUseCase(repo StudentRepository, gen FileGenerator) *ReportUsecase {
 	return &ReportUsecase{Repo: repo, Gen: gen}
 }
 

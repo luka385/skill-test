@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/luke385/skill-test/internal/domain"
+	"github.com/luke385/skill-test/internal/report/usecase/domain"
 )
 
 type NodeAPIClient struct {

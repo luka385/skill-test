@@ -5,13 +5,13 @@ import (
 
 	"github.com/jung-kurt/gofpdf"
 
-	"github.com/luke385/skill-test/internal/domain"
-	"github.com/luke385/skill-test/internal/ports"
+	"github.com/luke385/skill-test/internal/report"
+	"github.com/luke385/skill-test/internal/report/usecase/domain"
 )
 
 type PDFAdapter struct{}
 
-func NewPDFAdapter() ports.FileGenerator {
+func NewPDFAdapter() report.FileGenerator {
 	return &PDFAdapter{}
 }
 

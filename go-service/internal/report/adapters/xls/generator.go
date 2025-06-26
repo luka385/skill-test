@@ -5,13 +5,13 @@ import (
 
 	"github.com/xuri/excelize/v2"
 
-	"github.com/luke385/skill-test/internal/domain"
-	"github.com/luke385/skill-test/internal/ports"
+	"github.com/luke385/skill-test/internal/report"
+	"github.com/luke385/skill-test/internal/report/usecase/domain"
 )
 
 type ExcelAdapter struct{}
 
-func NewXLSGenerator() ports.FileGenerator {
+func NewXLSGenerator() report.FileGenerator {
 	return &ExcelAdapter{}
 }
 
